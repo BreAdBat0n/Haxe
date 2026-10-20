@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Externs — Haxe</title>
+<link rel="stylesheet" href="font.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><h1>Externs</h1><p>Описание внешних API для JS-библиотек.</p></header>
+<div class="layout">
+<nav class="tabs">
+<a href="index.html">Главная</a><a href="install.html">Установка</a><a href="syntax.html">Синтаксис</a><a href="types.html">Типы</a><a href="compile.html">Компиляция</a><a href="targets.html">Цели</a><a href="dom.html">DOM</a><a href="externs.html" class="active">Externs</a><a href="haxelib.html">Haxelib</a><a href="macros.html">Макросы</a><a href="faq.html">FAQ</a><a href="contact.html">Консультация</a>
+</nav>
+<main>
+<h2>Что такое externs</h2>
+<p>Externs — это описание внешнего API (обычно JS-библиотеки) в виде классов Haxe. Они не компилируются в код, а только сообщают компилятору, какие методы и свойства есть у внешнего объекта.</p>
+
+<h3>Пример: описание простой библиотеки</h3>
+<p>Допустим, в JS есть глобальный объект <code>MyLib</code> с методом <code>greet(name)</code>:</p>
+<pre><code>// MyLib.hx
+extern class MyLib {
+  static function greet(name:String):String;
+}</code></pre>
+<p>Теперь из Haxe можно вызывать:</p>
+<pre><code>trace(MyLib.greet("мир"));</code></pre>
+<p>Компилятор сгенерирует вызов <code>MyLib.greet("мир")</code> в JS — без лишних обёрток.</p>
+
+<h3>Extern для класса с полями</h3>
+<pre><code>extern class Vector2 {
+  var x:Float;
+  var y:Float;
+
+  function new(x:Float, y:Float);
+  function length():Float;
+}</code></pre>
+
+<h3>Extern для функции с колбэком</h3>
+<pre><code>extern class Fetcher {
+  static function get(url:String, onDone:String->Void):Void;
+}</code></pre>
+
+<h3>Extern с необязательными полями</h3>
+<pre><code>typedef Options = {
+  ?method:String,
+  ?headers:Dynamic,
+  ?body:String
+}</code></pre>
+
+<h3>Правила</h3>
+<ul>
+<li><code>extern</code> — класс только описывает API, не содержит реализации.</li>
+<li>Тела методов не пишутся — только сигнатуры.</li>
+<li>Поля без инициализации.</li>
+<li>Extern-классы не попадают в выходной код.</li>
+<li>Можно описывать глобальные объекты, классы, функции, typedef'ы.</li>
+</ul>
+
+<h3>Где брать готовые externs</h3>
+<p>Многие популярные JS-библиотеки уже описаны и доступны через haxelib:</p>
+<pre><code>haxelib install jQueryExtern
+haxelib install three.js
+haxelib install hxnodejs</code></pre>
+<p>Установленные externs подключаются через <code>-lib имя</code> в build.hxml.</p>
+
+<h3>Пример с jQuery</h3>
+<pre><code>import jQuery.JQuery;
+
+class Main {
+  static function main() {
+    new JQuery(function() {
+      new JQuery("#btn").click(function(e) {
+        trace("клик по кнопке");
+      });
+    });
+  }
+}</code></pre>
+</main>
+</div>
+<footer>© 2026 Консультация по Haxe</footer>
+<audio id="bg-music" loop></audio><button id="music-btn">♪</button>
+<div id="music-menu"><div class="now-label">Сейчас играет</div><h4 id="now-title">—</h4><ul class="track-list" id="track-list"></ul><div class="seek-label"><span id="seek-current">0:00</span><span id="seek-total">0:00</span></div><input type="range" id="seek" min="0" max="100" value="0" step="0.1"><div class="menu-hint">Зажмите кнопку — меню</div></div>
+<script src="script.js"></script>
+</body>
+</html>

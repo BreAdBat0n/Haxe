@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Макросы — Haxe</title>
+<link rel="stylesheet" href="font.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><h1>Макросы</h1><p>Генерация кода на этапе компиляции.</p></header>
+<div class="layout">
+<nav class="tabs">
+<a href="index.html">Главная</a><a href="install.html">Установка</a><a href="syntax.html">Синтаксис</a><a href="types.html">Типы</a><a href="compile.html">Компиляция</a><a href="targets.html">Цели</a><a href="dom.html">DOM</a><a href="externs.html">Externs</a><a href="haxelib.html">Haxelib</a><a href="macros.html" class="active">Макросы</a><a href="faq.html">FAQ</a><a href="contact.html">Консультация</a>
+</nav>
+<main>
+<h2>Макросы</h2>
+<p>Макросы в Haxe — это функции, которые выполняются <strong>во время компиляции</strong> и могут генерировать код, проверять структуру программы или вычислять что-то заранее.</p>
+
+<h3>Простейший макрос</h3>
+<pre><code>import haxe.macro.Expr;
+
+class MyMacros {
+  public static macro function hello():Expr {
+    return macro trace("Привет из макроса!");
+  }
+}
+
+class Main {
+  static function main() {
+    MyMacros.hello();
+  }
+}</code></pre>
+<p>При компиляции вызов <code>MyMacros.hello()</code> заменится на <code>trace("Привет из макроса!")</code>.</p>
+
+<h3>Возврат выражения через macro-синтаксис</h3>
+<pre><code>public static macro function twice(e:Expr):Expr {
+  return macro ($e + $e);
+}</code></pre>
+<p>Использование:</p>
+<pre><code>var x = MyMacros.twice(5); // превратится в (5 + 5)</code></pre>
+
+<h3>Генерация полей класса</h3>
+<pre><code>import haxe.macro.Context;
+import haxe.macro.Expr;
+
+class Build {
+  public static macro function build():Array&lt;Field&gt; {
+    return [{
+      name: "generated",
+      access: [APublic],
+      kind: FVar(macro:String, macro "сгенерировано"),
+      pos: Context.currentPos()
+    }];
+  }
+}</code></pre>
+
+<h3>Проверка на этапе компиляции</h3>
+<pre><code>public static macro function assertPositive(e:Expr):Expr {
+  var value = haxe.macro.Context.eval(e);
+  if (value &lt;= 0) {
+    haxe.macro.Context.error("значение должно быть &gt; 0", e.pos);
+  }
+  return e;
+}</code></pre>
+
+<h3>Условная компиляция (не макросы, но рядом)</h3>
+<pre><code>#if js
+  trace("это JavaScript");
+#elseif cpp
+  trace("это C++");
+#end</code></pre>
+
+<h3>Типичные применения</h3>
+<ul>
+<li>Автогенерация геттеров/сеттеров</li>
+<li>Проверка конфигурации на этапе компиляции</li>
+<li>Создание DSL (встроенных языков)</li>
+<li>Оптимизация: вычисление констант заранее</li>
+<li>Подключение внешних ресурсов (файлов, JSON) в код</li>
+</ul>
+
+<h3>Важно</h3>
+<p>Макросы выполняются в контексте компилятора — они не попадают в выходной код как обычные функции. Для их использования нужен <code>import haxe.macro.*</code>. Отладка макросов — через <code>Context.warning</code> и <code>Context.error</code>.</p>
+</main>
+</div>
+<footer>© 2026 Консультация по Haxe</footer>
+<audio id="bg-music" loop></audio><button id="music-btn">♪</button>
+<div id="music-menu"><div class="now-label">Сейчас играет</div><h4 id="now-title">—</h4><ul class="track-list" id="track-list"></ul><div class="seek-label"><span id="seek-current">0:00</span><span id="seek-total">0:00</span></div><input type="range" id="seek" min="0" max="100" value="0" step="0.1"><div class="menu-hint">Зажмите кнопку — меню</div></div>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Работа с DOM — Haxe</title>
+<link rel="stylesheet" href="font.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><h1>Работа с DOM</h1><p>js.Browser, элементы, события, стили.</p></header>
+<div class="layout">
+<nav class="tabs">
+<a href="index.html">Главная</a><a href="install.html">Установка</a><a href="syntax.html">Синтаксис</a><a href="types.html">Типы</a><a href="compile.html">Компиляция</a><a href="targets.html">Цели</a><a href="dom.html" class="active">DOM</a><a href="externs.html">Externs</a><a href="haxelib.html">Haxelib</a><a href="macros.html">Макросы</a><a href="faq.html">FAQ</a><a href="contact.html">Консультация</a>
+</nav>
+<main>
+<h2>Работа с DOM</h2>
+<p>При компиляции в JavaScript доступен модуль <code>js.Browser</code>, через который можно обращаться к DOM так же, как в обычном JS.</p>
+
+<h3>Получить элемент</h3>
+<pre><code>import js.Browser;
+
+var el = Browser.document.getElementById("app");</code></pre>
+
+<h3>Создать элемент</h3>
+<pre><code>import js.Browser;
+
+var div = Browser.document.createElement("div");
+div.textContent = "Привет!";
+Browser.document.body.appendChild(div);</code></pre>
+
+<h3>Изменить стиль</h3>
+<pre><code>var el = Browser.document.getElementById("app");
+el.style.color = "orange";
+el.style.fontSize = "18px";</code></pre>
+
+<h3>Добавить класс</h3>
+<pre><code>el.classList.add("active");
+el.classList.remove("active");
+el.classList.toggle("active");</code></pre>
+
+<h3>Обработчик события</h3>
+<pre><code>import js.Browser;
+
+var btn = Browser.document.getElementById("myBtn");
+btn.addEventListener("click", function(e) {
+  trace("клик!");
+});</code></pre>
+
+<h3>Ввод из поля</h3>
+<pre><code>import js.html.InputElement;
+
+var input = cast Browser.document.getElementById("name");
+var value = input.value;</code></pre>
+
+<h3>Таймеры</h3>
+<pre><code>import js.Browser;
+
+Browser.window.setTimeout(function() {
+  trace("прошло 2 секунды");
+}, 2000);
+
+var id = Browser.window.setInterval(function() {
+  trace("каждую секунду");
+}, 1000);
+Browser.window.clearInterval(id);</code></pre>
+
+<h3>Работа с localStorage</h3>
+<pre><code>import js.Browser;
+
+Browser.window.localStorage.setItem("key", "value");
+var v = Browser.window.localStorage.getItem("key");
+Browser.window.localStorage.removeItem("key");</code></pre>
+
+<h3>Типизированные элементы</h3>
+<p>Для типизации используйте <code>js.html.*</code>:</p>
+<pre><code>import js.html.DivElement;
+import js.html.InputElement;
+
+var div:DivElement = Browser.document.createElement("div");
+var input:InputElement = cast Browser.document.getElementById("name");</code></pre>
+
+<h3>Важно</h3>
+<p>Весь код с <code>js.Browser</code> работает только при компиляции в JavaScript. При сборке в C++ или Java этот код не скомпилируется — используйте условную компиляцию:</p>
+<pre><code>#if js
+  import js.Browser;
+  Browser.document.title = "Haxe";
+#end</code></pre>
+</main>
+</div>
+<footer>© 2026 Консультация по Haxe</footer>
+<audio id="bg-music" loop></audio><button id="music-btn">♪</button>
+<div id="music-menu"><div class="now-label">Сейчас играет</div><h4 id="now-title">—</h4><ul class="track-list" id="track-list"></ul><div class="seek-label"><span id="seek-current">0:00</span><span id="seek-total">0:00</span></div><input type="range" id="seek" min="0" max="100" value="0" step="0.1"><div class="menu-hint">Зажмите кнопку — меню</div></div>
+<script src="script.js"></script>
+</body>
+</html>

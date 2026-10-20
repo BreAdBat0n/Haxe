@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Консультация по Haxe</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="font.css">
+</head>
+<body>
+
+<header>
+  <h1>Консультация по языку Haxe</h1>
+  <p>Haxe — открытый строго типизированный язык, который компилируется в JavaScript, C++, C#, Java, JVM, Python, Lua, PHP и другие цели [citation:1][citation:10].</p>
+  <span class="badge">12 разделов · подробный справочник</span>
+</header>
+
+<div class="layout">
+  <nav class="tabs">
+    <a href="index.html" class="active">Главная</a>
+    <a href="install.html">Установка</a>
+    <a href="syntax.html">Синтаксис</a>
+    <a href="types.html">Типы</a>
+    <a href="compile.html">Компиляция</a>
+    <a href="targets.html">Цели</a>
+    <a href="dom.html">DOM</a>
+    <a href="externs.html">Externs</a>
+    <a href="haxelib.html">Haxelib</a>
+    <a href="macros.html">Макросы</a>
+    <a href="faq.html">FAQ</a>
+    <a href="contact.html">Консультация</a>
+  </nav>
+
+  <main>
+    <h2>Добро пожаловать</h2>
+    <p>Этот сайт — подробный справочник по языку Haxe. Выберите раздел слева (или в ленте на мобильном), чтобы перейти к нужной теме.</p>
+
+    <div class="grid">
+      <div class="card"><h3>Начало</h3><p>Установка компилятора, IDE и первый проект.</p></div>
+      <div class="card"><h3>Синтаксис и типы</h3><p>Переменные, функции, классы, система типов.</p></div>
+      <div class="card"><h3>Компиляция и цели</h3><p>Флаги, build.hxml, 9+ целевых платформ.</p></div>
+      <div class="card"><h3>Продвинутое</h3><p>DOM, externs, haxelib, макросы.</p></div>
+    </div>
+
+    <h3>Что такое Haxe (кратко)</h3>
+    <p>Haxe состоит из высокоуровневого языка и компилятора. Одна кодовая база может компилироваться в разные цели, что позволяет использовать общий код для игр, веба, мобильных и десктопных приложений [citation:10].</p>
+
+    <h3>Поддерживаемые цели</h3>
+    <ul>
+      <li><strong>JavaScript</strong> — браузер, десктоп, мобильные, сервер</li>
+      <li><strong>C++</strong> — десктоп, мобильные, сервер, консоли</li>
+      <li><strong>Java / JVM / C#</strong> — десктоп, мобильные, сервер</li>
+      <li><strong>Python, PHP, Lua</strong> — сервер, скрипты, десктоп</li>
+      <li><strong>Neko, HashLink</strong> — собственные VM Haxe [citation:1][citation:10]</li>
+    </ul>
+
+    <h3>С чего начать</h3>
+    <p>Перейдите на вкладку <a href="install.html">«Установка»</a> — там пошаговая инструкция для Windows, macOS и Linux.</p>
+  </main>
+</div>
+
+<footer>© 2026 Консультация по Haxe · Справочник</footer>
+
+<audio id="bg-music" loop></audio>
+<button id="music-btn" title="Клик — плей/пауза, зажать ЛКМ — меню треков">♪</button>
+<div id="music-menu">
+  <div class="now-label">Сейчас играет</div><h4 id="now-title">—</h4>
+  <ul class="track-list" id="track-list"></ul>
+  <div class="seek-label"><span id="seek-current">0:00</span><span id="seek-total">0:00</span></div>
+  <input type="range" id="seek" min="0" max="100" value="0" step="0.1">
+  <div class="menu-hint">Зажмите кнопку — меню</div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

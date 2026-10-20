@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'CustomFont';
+    src: url('fonts/vcr.ttf') format('truetype');
+    font-weight: 400;
+}
+
+body, button, input, a, p, h1, h2, h3, h4, h5, h6, span, div, li, .logo, .card-label, .nav-links {
+    font-family: 'CustomFont', 'Inter', system-ui, sans-serif;
+}

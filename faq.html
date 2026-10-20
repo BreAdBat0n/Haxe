@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAQ — Haxe</title>
+<link rel="stylesheet" href="font.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><h1>FAQ</h1><p>Частые вопросы по Haxe.</p></header>
+<div class="layout">
+<nav class="tabs">
+<a href="index.html">Главная</a><a href="install.html">Установка</a><a href="syntax.html">Синтаксис</a><a href="types.html">Типы</a><a href="compile.html">Компиляция</a><a href="targets.html">Цели</a><a href="dom.html">DOM</a><a href="externs.html">Externs</a><a href="haxelib.html">Haxelib</a><a href="macros.html">Макросы</a><a href="faq.html" class="active">FAQ</a><a href="contact.html">Консультация</a>
+</nav>
+<main>
+<h2>Типовые вопросы</h2>
+
+<details>
+<summary>Haxe — это фреймворк?</summary>
+<p>Нет. Haxe — это язык и инструментарий (компилятор + стандартная библиотека). Сторонние библиотеки подключаются через <code>haxelib</code>.</p>
+</details>
+
+<details>
+<summary>Как скомпилировать в JavaScript?</summary>
+<p>Используйте флаг <code>-js</code>: <code>haxe -main Main -js main.js</code>. Затем подключите файл через <code>&lt;script src="main.js"&gt;&lt;/script&gt;</code>.</p>
+</details>
+
+<details>
+<summary>Как обратиться к DOM браузера?</summary>
+<p>Через модуль <code>js.Browser</code>: <code>js.Browser.document.getElementById("id")</code>, <code>document.createElement(...)</code> и т.д. Подробнее — на вкладке «DOM».</p>
+</details>
+
+<details>
+<summary>Чем Haxe отличается от TypeScript?</summary>
+<p>Haxe компилируется не только в JS, но и в C++, Java, Python, PHP и др. TypeScript ориентирован в первую очередь на JS-экосистему.</p>
+</details>
+
+<details>
+<summary>Нужен ли Node.js для работы с Haxe?</summary>
+<p>Не обязательно. Node.js может понадобиться, если вы собираете серверную часть на Haxe/JS или хотите запускать JS-цель вне браузера.</p>
+</details>
+
+<details>
+<summary>Где искать библиотеки?</summary>
+<p>В репозитории <code>lib.haxe.org</code> (haxelib). Установка: <code>haxelib install имя_библиотеки</code>.</p>
+</details>
+
+<details>
+<summary>Что такое build.hxml?</summary>
+<p>Файл конфигурации сборки: пути к исходникам, главный класс, цель компиляции и флаги. Запуск: <code>haxe build.hxml</code>.</p>
+</details>
+
+<details>
+<summary>Можно ли писать под Android и iOS?</summary>
+<p>Да. Через C++ (<code>-cpp</code>) или Java (<code>-java</code> для Android). Для iOS — C++-цель с последующей сборкой в Xcode.</p>
+</details>
+
+<details>
+<summary>Что такое HashLink?</summary>
+<p>Современная виртуальная машина Haxe. Быстрее Neko, используется в играх (Heaps.io, HaxeFlixel) и на сервере. Флаг компиляции: <code>-hl</code>.</p>
+</details>
+
+<details>
+<summary>Есть ли система сборки вроде npm?</summary>
+<p>Есть <code>haxelib</code> для библиотек и <code>build.hxml</code> для сборки. Также существуют сторонние инструменты (lix, haxelib.json для публикации).</p>
+</details>
+
+<details>
+<summary>Как отлаживать код?</summary>
+<p>В JS-цели — через DevTools браузера (source maps включаются флагом <code>-debug</code>). В C++/HL — через отладчик (GDB, Visual Studio) с флагом <code>-debug</code>.</p>
+</details>
+
+<details>
+<summary>Haxe мёртв?</summary>
+<p>Нет. Язык активно развивается, выходят новые версии компилятора, есть крупные проекты (Heaps.io, HaxeFlixel, Armory3D). Сообщество небольшое, но живое.</p>
+</details>
+</main>
+</div>
+<footer>© 2026 Консультация по Haxe</footer>
+<audio id="bg-music" loop></audio><button id="music-btn">♪</button>
+<div id="music-menu"><div class="now-label">Сейчас играет</div><h4 id="now-title">—</h4><ul class="track-list" id="track-list"></ul><div class="seek-label"><span id="seek-current">0:00</span><span id="seek-total">0:00</span></div><input type="range" id="seek" min="0" max="100" value="0" step="0.1"><div class="menu-hint">Зажмите кнопку — меню</div></div>
+<script src="script.js"></script>
+</body>
+</html>

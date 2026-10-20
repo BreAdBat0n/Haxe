@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Типы — Haxe</title>
+<link rel="stylesheet" href="font.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><h1>Система типов</h1><p>Строгая типизация, вывод типов, классы, интерфейсы, перечисления.</p></header>
+<div class="layout">
+<nav class="tabs">
+<a href="index.html">Главная</a><a href="install.html">Установка</a><a href="syntax.html">Синтаксис</a><a href="types.html" class="active">Типы</a><a href="compile.html">Компиляция</a><a href="targets.html">Цели</a><a href="dom.html">DOM</a><a href="externs.html">Externs</a><a href="haxelib.html">Haxelib</a><a href="macros.html">Макросы</a><a href="faq.html">FAQ</a><a href="contact.html">Консультация</a>
+</nav>
+<main>
+<h2>Типы в Haxe</h2>
+<p>Haxe — строго типизированный язык. Система типов обнаруживает ошибки на этапе компиляции, которые в целевых языках проявились бы только во время выполнения. Типы можно указывать явно или позволять компилятору выводить их.</p>
+<h3>Базовые типы</h3>
+<ul>
+<li><code>Int</code> — целые числа</li>
+<li><code>Float</code> — числа с плавающей точкой</li>
+<li><code>String</code> — строки</li>
+<li><code>Bool</code> — <code>true</code> / <code>false</code></li>
+<li><code>Void</code> — отсутствие значения (для функций)</li>
+<li><code>Null&lt;T&gt;</code> — nullable-тип</li>
+<li><code>Dynamic</code> — динамический тип (отключает проверки)</li>
+</ul>
+<h3>Вывод типов</h3>
+<pre><code>var x = 10;        // Int
+var y = 3.14;      // Float
+var name = "Haxe"; // String</code></pre>
+<h3>Классы</h3>
+<pre><code>class Person {
+  public var name:String;
+  private var age:Int;
+
+  public function new(name:String, age:Int) {
+    this.name = name;
+    this.age = age;
+  }
+
+  public function greet():String {
+    return "Привет, " + name;
+  }
+}</code></pre>
+<h3>Наследование</h3>
+<pre><code>class Student extends Person {
+  public var university:String;
+
+  public function new(name:String, age:Int, university:String) {
+    super(name, age);
+    this.university = university;
+  }
+}</code></pre>
+<h3>Интерфейсы</h3>
+<pre><code>interface IShape {
+  function area():Float;
+}
+
+class Circle implements IShape {
+  var r:Float;
+  public function new(r:Float) { this.r = r; }
+  public function area():Float { return 3.14 * r * r; }
+}</code></pre>
+<h3>Перечисления (enum)</h3>
+<pre><code>enum Color {
+  Red;
+  Green;
+  Blue;
+  Custom(r:Int, g:Int, b:Int);
+}
+
+var c = Color.Red;
+switch (c) {
+  case Red: trace("красный");
+  case Custom(r, g, b): trace("rgb: " + r + "," + g + "," + b);
+  default: trace("другой");
+}</code></pre>
+<h3>Типизированные функции</h3>
+<pre><code>var fn:Int->Int = function(x) return x * 2;</code></pre>
+<h3>Nullable</h3>
+<pre><code>var maybe:Null&lt;Int&gt; = null;
+maybe = 5;</code></pre>
+<h3>Dynamic</h3>
+<p><code>Dynamic</code> отключает проверку типов — используйте только при необходимости (например, при работе с внешними JS-объектами):</p>
+<pre><code>var obj:Dynamic = {};
+obj.anyField = "значение";</code></pre>
+</main>
+</div>
+<footer>© 2026 Консультация по Haxe</footer>
+<audio id="bg-music" loop></audio><button id="music-btn">♪</button>
+<div id="music-menu"><div class="now-label">Сейчас играет</div><h4 id="now-title">—</h4><ul class="track-list" id="track-list"></ul><div class="seek-label"><span id="seek-current">0:00</span><span id="seek-total">0:00</span></div><input type="range" id="seek" min="0" max="100" value="0" step="0.1"><div class="menu-hint">Зажмите кнопку — меню</div></div>
+<script src="script.js"></script>
+</body>
+</html>
