@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header><h1>Система типов</h1><p>Строгая типизация, вывод типов, классы, интерфейсы, перечисления.</p></header>
+<header><h1>Система типов</h1><p>Строгая типизация, вывод типов, классы, интерфейсы, перечисления, typedef, абстрактные типы.</p></header>
 <div class="layout">
 <nav class="tabs">
 <a href="index.html">Главная</a><a href="install.html">Установка</a><a href="syntax.html">Синтаксис</a><a href="types.html" class="active">Типы</a><a href="compile.html">Компиляция</a><a href="targets.html">Цели</a><a href="dom.html">DOM</a><a href="externs.html">Externs</a><a href="haxelib.html">Haxelib</a><a href="macros.html">Макросы</a><a href="faq.html">FAQ</a>
@@ -16,20 +16,27 @@
 <main>
 <h2>Типы в Haxe</h2>
 <p>Haxe — строго типизированный язык. Система типов обнаруживает ошибки на этапе компиляции, которые в целевых языках проявились бы только во время выполнения. Типы можно указывать явно или позволять компилятору выводить их.</p>
+
 <h3>Базовые типы</h3>
 <ul>
-<li><code>Int</code> — целые числа</li>
-<li><code>Float</code> — числа с плавающей точкой</li>
-<li><code>String</code> — строки</li>
+<li><code>Int</code> — целые числа (32-битные на большинстве целей)</li>
+<li><code>Float</code> — числа с плавающей точкой (64-битные)</li>
+<li><code>String</code> — строки UTF-8</li>
 <li><code>Bool</code> — <code>true</code> / <code>false</code></li>
 <li><code>Void</code> — отсутствие значения (для функций)</li>
 <li><code>Null&lt;T&gt;</code> — nullable-тип</li>
 <li><code>Dynamic</code> — динамический тип (отключает проверки)</li>
+<li><code>Any</code> — любой тип (включая Void)</li>
 </ul>
+
 <h3>Вывод типов</h3>
 <pre><code>var x = 10;        // Int
 var y = 3.14;      // Float
-var name = "Haxe"; // String</code></pre>
+var name = "Haxe"; // String
+var list = [1, 2, 3]; // Array&lt;Int&gt;</code></pre>
+<p>Компилятор выводит типы из контекста. Если нужно — указывайте явно:</p>
+<pre><code>var x:Int = 10;</code></pre>
+
 <h3>Классы</h3>
 <pre><code>class Person {
   public var name:String;
@@ -44,6 +51,21 @@ var name = "Haxe"; // String</code></pre>
     return "Привет, " + name;
   }
 }</code></pre>
+<p>Использование:</p>
+<pre><code>var p = new Person("Иван", 25);
+trace(p.greet());</code></pre>
+
+<h3>Модификаторы доступа</h3>
+<ul>
+<li><code>public</code> — доступно отовсюду</li>
+<li><code>private</code> — только внутри класса (по умолчанию)</li>
+<li><code>static</code> — принадлежит классу</li>
+<li><code>inline</code> — подстановка в место вызова</li>
+<li><code>override</code> — переопределение метода родителя</li>
+<li><code>final</code> — запрет переопределения</li>
+<li><code>dynamic</code> — метод можно переопределить в рантайме (для JS)</li>
+</ul>
+
 <h3>Наследование</h3>
 <pre><code>class Student extends Person {
   public var university:String;
@@ -52,7 +74,12 @@ var name = "Haxe"; // String</code></pre>
     super(name, age);
     this.university = university;
   }
+
+  override public function greet():String {
+    return super.greet() + ", студент " + university;
+  }
 }</code></pre>
+
 <h3>Интерфейсы</h3>
 <pre><code>interface IShape {
   function area():Float;
@@ -62,7 +89,24 @@ class Circle implements IShape {
   var r:Float;
   public function new(r:Float) { this.r = r; }
   public function area():Float { return 3.14 * r * r; }
+}
+
+class Square implements IShape {
+  var side:Float;
+  public function new(side:Float) { this.side = side; }
+  public function area():Float { return side * side; }
 }</code></pre>
+<p>Класс может реализовать несколько интерфейсов:</p>
+<pre><code>class MyClass implements IShape implements IComparable { ... }</code></pre>
+
+<h3>Абстрактные классы</h3>
+<pre><code>@:abstract
+class Shape {
+  public function area():Float {
+    throw "не реализовано";
+  }
+}</code></pre>
+
 <h3>Перечисления (enum)</h3>
 <pre><code>enum Color {
   Red;
@@ -77,15 +121,120 @@ switch (c) {
   case Custom(r, g, b): trace("rgb: " + r + "," + g + "," + b);
   default: trace("другой");
 }</code></pre>
+<p>Enum с параметрами:</p>
+<pre><code>enum Result {
+  Ok(value:Int);
+  Error(msg:String);
+}
+
+function handle(r:Result) {
+  switch (r) {
+    case Ok(v): trace("ok: " + v);
+    case Error(m): trace("error: " + m);
+  }
+}</code></pre>
+
+<h3>Typedef</h3>
+<p>Псевдоним типа или описание структуры:</p>
+<pre><code>typedef User = {
+  name:String,
+  age:Int,
+  ?email:String
+};
+
+var u:User = { name: "Иван", age: 25 };</code></pre>
+<p>Псевдоним для простого типа:</p>
+<pre><code>typedef UserId = Int;
+typedef Callback = String->Void;</code></pre>
+
+<h3>Абстрактные типы</h3>
+<p>Абстрактные типы позволяют создавать «обёртки» над существующими типами с перегрузкой операторов:</p>
+<pre><code>abstract Meters(Float) from Float to Float {
+  public inline function new(v:Float) this = v;
+  @:op(A + B) public static function add(a:Meters, b:Meters):Meters {
+    return new Meters(a + b);
+  }
+}
+
+var m1:Meters = 10;
+var m2:Meters = 20;
+var m3 = m1 + m2;</code></pre>
+
 <h3>Типизированные функции</h3>
-<pre><code>var fn:Int->Int = function(x) return x * 2;</code></pre>
+<pre><code>var fn:Int->Int = function(x) return x * 2;
+var callback:String->Void = function(s) trace(s);</code></pre>
+
 <h3>Nullable</h3>
 <pre><code>var maybe:Null&lt;Int&gt; = null;
 maybe = 5;</code></pre>
+<p>На JVM/CS <code>Null&lt;T&gt;</code> может иметь другую семантику — учитывайте при кроссплатформенной разработке.</p>
+
 <h3>Dynamic</h3>
 <p><code>Dynamic</code> отключает проверку типов — используйте только при необходимости (например, при работе с внешними JS-объектами):</p>
 <pre><code>var obj:Dynamic = {};
-obj.anyField = "значение";</code></pre>
+obj.anyField = "значение";
+trace(obj.anyField);</code></pre>
+
+<h3>Any</h3>
+<p><code>Any</code> — любой тип, но, в отличие от <code>Dynamic</code>, требует явного приведения для использования:</p>
+<pre><code>var a:Any = 5;
+var b:Int = cast a;</code></pre>
+
+<h3>Массивы и коллекции</h3>
+<ul>
+<li><code>Array&lt;T&gt;</code> — динамический массив</li>
+<li><code>List&lt;T&gt;</code> — двусвязный список</li>
+<li><code>Map&lt;K, V&gt;</code> — ассоциативный массив (интерфейс)</li>
+<li><code>StringMap&lt;V&gt;</code> — map со строковыми ключами</li>
+<li><code>IntMap&lt;V&gt;</code> — map с целочисленными ключами</li>
+<li><code>Vector&lt;T&gt;</code> — типизированный массив для C++/Java/CS</li>
+</ul>
+
+<h3>Параметризованные типы (generics)</h3>
+<pre><code>class Box&lt;T&gt; {
+  public var value:T;
+  public function new(value:T) { this.value = value; }
+}
+
+var b = new Box&lt;Int&gt;(5);
+trace(b.value);</code></pre>
+
+<h3>Ограничения generics</h3>
+<pre><code>class Container&lt;T:IShape&gt; {
+  public var item:T;
+  public function new(item:T) { this.item = item; }
+  public function area():Float return item.area();
+}</code></pre>
+
+<h3>Структурные типы</h3>
+<p>Haxe проверяет совместимость по структуре (duck typing на уровне компиляции):</p>
+<pre><code>typedef Named = { name:String };
+
+function hello(n:Named) trace(n.name);
+
+hello({ name: "Иван" }); // ok
+hello({ name: "Иван", age: 25 }); // тоже ok</code></pre>
+
+<h3>Типобезопасность и приведение</h3>
+<pre><code>var d:Dynamic = "строка";
+var s:String = cast d; // явное приведение
+
+if (Std.isOfType(d, String)) {
+  trace("это строка");
+}</code></pre>
+
+<h3>Void и Never</h3>
+<ul>
+<li><code>Void</code> — функция ничего не возвращает</li>
+<li><code>Never</code> — функция не возвращает управление (бросает исключение или бесконечный цикл)</li>
+</ul>
+
+<h3>Сравнение типов</h3>
+<ul>
+<li><code>==</code> — структурное сравнение для примитивов, ссылочное для объектов</li>
+<li><code>Std.isOfType(v, T)</code> — проверка типа в рантайме</li>
+<li><code>Type.typeof(v)</code> — получить тип значения</li>
+</ul>
 </main>
 </div>
 <footer>© 2026 Консультация по Haxe</footer>

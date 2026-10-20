@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header><h1>Компиляция</h1><p>Флаги, build.hxml, проверка и запуск.</p></header>
+<header><h1>Компиляция</h1><p>Флаги, build.hxml, несколько целей, отладка, оптимизация.</p></header>
 <div class="layout">
 <nav class="tabs">
 <a href="index.html">Главная</a><a href="install.html">Установка</a><a href="syntax.html">Синтаксис</a><a href="types.html">Типы</a><a href="compile.html" class="active">Компиляция</a><a href="targets.html">Цели</a><a href="dom.html">DOM</a><a href="externs.html">Externs</a><a href="haxelib.html">Haxelib</a><a href="macros.html">Макросы</a><a href="faq.html">FAQ</a>
@@ -16,32 +16,37 @@
 <main>
 <h2>Компиляция</h2>
 <p>Компилятор вызывается командой <code>haxe</code> с флагами цели. Один и тот же код можно собрать под разные платформы.</p>
+
 <h3>В JavaScript</h3>
 <pre><code>haxe -main Main -js main.js</code></pre>
 <p>Затем подключите файл на странице:</p>
 <pre><code>&lt;script src="main.js"&gt;&lt;/script&gt;</code></pre>
+
 <h3>Быстрая проверка (интерпретация)</h3>
 <pre><code>haxe -main Main --interp</code></pre>
+<p>Код выполняется интерпретатором Haxe без создания файла — удобно для проверки синтаксиса и логики.</p>
+
 <h3>В C++</h3>
 <pre><code>haxe -main Main -cpp bin/cpp</code></pre>
+<p>Компилятор сгенерирует C++-код, который затем собирается нативным компилятором (MSVC, GCC, Clang).</p>
+
 <h3>В Java</h3>
 <pre><code>haxe -main Main -java bin/java</code></pre>
+<p>Требует <code>haxelib install hxjava</code>.</p>
+
 <h3>В Python</h3>
 <pre><code>haxe -main Main -python bin/main.py</code></pre>
+
+<h3>В HashLink</h3>
+<pre><code>haxe -main Main -hl bin/main.hl
+hl bin/main.hl</code></pre>
+
 <h3>Файл сборки build.hxml</h3>
 <p>Удобно хранить флаги в отдельном файле и запускать просто <code>haxe build.hxml</code>:</p>
 <pre><code>-cp src
 -main Main
 -js bin/main.js</code></pre>
-<h3>Полезные флаги</h3>
-<ul>
-<li><code>-cp</code> — добавить путь к исходникам</li>
-<li><code>-main</code> — указать главный класс</li>
-<li><code>-js</code>, <code>-cpp</code>, <code>-java</code>, <code>-python</code> — цель компиляции</li>
-<li><code>-debug</code> — включить отладочную информацию</li>
-<li><code>-D</code> — определить флаг компиляции (<code>-D js-es=6</code> и т.п.)</li>
-<li><code>--no-opt</code> — отключить оптимизацию</li>
-</ul>
+
 <h3>Несколько целей в одном build.hxml</h3>
 <pre><code>-cp src
 -main Main
@@ -52,8 +57,89 @@
 --next
 -cpp bin/cpp</code></pre>
 <p>Каждый блок после <code>--next</code> — отдельная сборка.</p>
+
+<h3>Полезные флаги</h3>
+<ul>
+<li><code>-cp</code> — добавить путь к исходникам</li>
+<li><code>-main</code> — указать главный класс</li>
+<li><code>-js</code>, <code>-cpp</code>, <code>-java</code>, <code>-python</code>, <code>-hl</code>, <code>-neko</code>, <code>-php</code>, <code>-lua</code>, <code>-cs</code> — цель компиляции</li>
+<li><code>-debug</code> — включить отладочную информацию (source maps для JS)</li>
+<li><code>-D</code> — определить флаг компиляции (<code>-D js-es=6</code>, <code>-D analyzer-optimize</code>)</li>
+<li><code>--no-opt</code> — отключить оптимизацию</li>
+<li><code>-lib</code> — подключить библиотеку haxelib</li>
+<li><code>-resource</code> — встроить файл как ресурс</li>
+<li><code>-xml</code> — выгрузить XML-описание проекта (для IDE)</li>
+<li><code>--each</code> — применить флаги ко всем целям</li>
+<li><code>-v</code> — подробный вывод</li>
+<li><code>--times</code> — показать время компиляции по модулям</li>
+</ul>
+
+<h3>Определения компиляции</h3>
+<p>Через <code>-D</code> можно включать условные блоки:</p>
+<pre><code>#if debug
+  trace("отладка");
+#end</code></pre>
+<p>Сборка:</p>
+<pre><code>haxe -main Main -js main.js -debug</code></pre>
+
+<h3>Source maps для JS</h3>
+<p>Флаг <code>-debug</code> автоматически включает source maps. В браузере можно отлаживать Haxe-код напрямую.</p>
+<pre><code>haxe -main Main -js main.js -debug</code></pre>
+
+<h3>Ресурсы</h3>
+<p>Встроить файл в приложение:</p>
+<pre><code>-resource assets/data.json@data</code></pre>
+<p>Доступ из кода:</p>
+<pre><code>var data = haxe.Resource.getString("data");</code></pre>
+
+<h3>Оптимизация</h3>
+<ul>
+<li><code>-D analyzer-optimize</code> — включить оптимизатор (рекомендуется)</li>
+<li><code>-D no-traces</code> — убрать все <code>trace</code> из сборки</li>
+<li><code>--no-opt</code> — отключить оптимизацию (для отладки)</li>
+<li><code>-D dce=full</code> — dead code elimination (удаление неиспользуемого кода)</li>
+</ul>
+
+<h3>DCE (Dead Code Elimination)</h3>
+<p>Уровни: <code>no</code>, <code>std</code>, <code>full</code>. Пример:</p>
+<pre><code>-dce full</code></pre>
+
 <h3>Очистка</h3>
 <p>Просто удалите выходную папку (<code>bin/</code>) — компилятор не хранит кэш в проекте.</p>
+
+<h3>Вывод ошибок</h3>
+<p>Компилятор выводит ошибки с указанием файла, строки и столбца. Флаг <code>-v</code> добавляет подробности.</p>
+
+<h3>Компиляция только изменённых файлов</h3>
+<p>Haxe компилирует весь проект каждый раз (нет инкрементальной сборки «из коробки»), но использует кэш сервера компиляции (<code>--connect</code>) для ускорения:</p>
+<pre><code>haxe --connect 6000 build.hxml</code></pre>
+<p>Сервер компиляции запускается отдельно и кэширует результаты между сборками.</p>
+
+<h3>Профилирование</h3>
+<pre><code>haxe -main Main -js main.js --times</code></pre>
+<p>Покажет время компиляции по модулям — полезно для поиска узких мест.</p>
+
+<h3>Пример полного build.hxml</h3>
+<pre><code>-cp src
+-main Main
+-lib heaps
+-D analyzer-optimize
+-dce full
+-debug
+
+--next
+-js bin/main.js
+
+--next
+-hl bin/main.hl</code></pre>
+
+<h3>Типичные ошибки</h3>
+<ul>
+<li><strong>Class not found</strong> — проверьте <code>-cp</code> и имя класса</li>
+<li><strong>Type not found</strong> — не подключена библиотека или externs</li>
+<li><strong>Uncaught exception</strong> — ошибка в рантайме, смотрите консоль</li>
+<li><strong>Source map не работает</strong> — проверьте флаг <code>-debug</code> и путь к <code>.map</code></li>
+</ul>
 </main>
 </div>
 <footer>© 2026 Консультация по Haxe</footer>

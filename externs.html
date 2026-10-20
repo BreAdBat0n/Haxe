@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header><h1>Externs</h1><p>Описание внешних API для JS-библиотек.</p></header>
+<header><h1>Externs</h1><p>Описание внешних API, правила, примеры, готовые библиотеки.</p></header>
 <div class="layout">
 <nav class="tabs">
 <a href="index.html">Главная</a><a href="install.html">Установка</a><a href="syntax.html">Синтаксис</a><a href="types.html">Типы</a><a href="compile.html">Компиляция</a><a href="targets.html">Цели</a><a href="dom.html">DOM</a><a href="externs.html" class="active">Externs</a><a href="haxelib.html">Haxelib</a><a href="macros.html">Макросы</a><a href="faq.html">FAQ</a>
@@ -16,6 +16,14 @@
 <main>
 <h2>Что такое externs</h2>
 <p>Externs — это описание внешнего API (обычно JS-библиотеки) в виде классов Haxe. Они не компилируются в код, а только сообщают компилятору, какие методы и свойства есть у внешнего объекта.</p>
+
+<h3>Зачем нужны</h3>
+<ul>
+<li>Типизация при работе с внешними библиотеками</li>
+<li>Автодополнение в IDE</li>
+<li>Проверка ошибок на этапе компиляции</li>
+<li>Нет накладных расходов в рантайме</li>
+</ul>
 
 <h3>Пример: описание простой библиотеки</h3>
 <p>Допустим, в JS есть глобальный объект <code>MyLib</code> с методом <code>greet(name)</code>:</p>
@@ -48,6 +56,34 @@ extern class MyLib {
   ?body:String
 }</code></pre>
 
+<h3>Extern для глобальной функции</h3>
+<pre><code>extern class Console {
+  static function log(msg:Dynamic):Void;
+  static function error(msg:Dynamic):Void;
+}</code></pre>
+
+<h3>Extern с @:native</h3>
+<p>Если имя класса в JS отличается от имени в Haxe, используйте <code>@:native</code>:</p>
+<pre><code>@:native("THREE.Scene")
+extern class Scene {
+  function new();
+  function add(obj:Dynamic):Void;
+}</code></pre>
+
+<h3>Extern с @:jsRequire</h3>
+<p>Для подключения модуля через <code>require</code> (Node.js):</p>
+<pre><code>@:jsRequire("fs")
+extern class Fs {
+  static function readFileSync(path:String, encoding:String):String;
+}</code></pre>
+
+<h3>Extern с перегрузкой</h3>
+<pre><code>extern class JQuery {
+  @:overload(function(selector:String):JQuery {})
+  @:overload(function(el:js.html.Element):JQuery {})
+  function new();
+}</code></pre>
+
 <h3>Правила</h3>
 <ul>
 <li><code>extern</code> — класс только описывает API, не содержит реализации.</li>
@@ -55,13 +91,15 @@ extern class MyLib {
 <li>Поля без инициализации.</li>
 <li>Extern-классы не попадают в выходной код.</li>
 <li>Можно описывать глобальные объекты, классы, функции, typedef'ы.</li>
+<li>Модификаторы <code>@:native</code>, <code>@:jsRequire</code>, <code>@:overload</code> управляют генерацией.</li>
 </ul>
 
 <h3>Где брать готовые externs</h3>
 <p>Многие популярные JS-библиотеки уже описаны и доступны через haxelib:</p>
 <pre><code>haxelib install jQueryExtern
 haxelib install three.js
-haxelib install hxnodejs</code></pre>
+haxelib install hxnodejs
+haxelib install hxelectron</code></pre>
 <p>Установленные externs подключаются через <code>-lib имя</code> в build.hxml.</p>
 
 <h3>Пример с jQuery</h3>
@@ -76,6 +114,46 @@ class Main {
     });
   }
 }</code></pre>
+
+<h3>Пример с Three.js</h3>
+<pre><code>import three.Scene;
+import three.PerspectiveCamera;
+import three.WebGLRenderer;
+
+var scene = new Scene();
+var camera = new PerspectiveCamera(75, 1.0, 0.1, 1000);
+var renderer = new WebGLRenderer();
+renderer.setSize(800, 600);</code></pre>
+
+<h3>Пример с Node.js (hxnodejs)</h3>
+<pre><code>import js.node.Fs;
+
+var content = Fs.readFileSync("file.txt", "utf8");
+trace(content);</code></pre>
+
+<h3>Как писать свои externs</h3>
+<ol>
+<li>Откройте документацию JS-библиотеки.</li>
+<li>Создайте <code>extern class</code> с методами и полями.</li>
+<li>Используйте <code>@:native</code>, если имя в JS отличается.</li>
+<li>Подключите файл через <code>-cp</code> или положите в проект.</li>
+<li>Проверьте компиляцию.</li>
+</ol>
+
+<h3>Частые ошибки</h3>
+<ul>
+<li>Забыли <code>extern</code> — компилятор попытается сгенерировать реализацию.</li>
+<li>Неверное имя — используйте <code>@:native</code>.</li>
+<li>Не подключена библиотека — добавьте <code>-lib</code> или <code>-cp</code>.</li>
+<li>Несовпадение типов — проверьте сигнатуры в документации.</li>
+</ul>
+
+<h3>Полезные ссылки</h3>
+<ul>
+<li>Каталог externs: <strong>lib.haxe.org</strong> (тег externs)</li>
+<li>GitHub: <strong>github.com/HaxeFoundation</strong> (hxnodejs, hxjava и др.)</li>
+<li>Документация: <strong>haxe.org/manual/target-javascript-externs</strong></li>
+</ul>
 </main>
 </div>
 <footer>© 2026 Консультация по Haxe</footer>

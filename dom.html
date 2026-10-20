@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header><h1>Работа с DOM</h1><p>js.Browser, элементы, события, стили.</p></header>
+<header><h1>Работа с DOM</h1><p>js.Browser, элементы, события, стили, формы, таймеры, storage, fetch.</p></header>
 <div class="layout">
 <nav class="tabs">
 <a href="index.html">Главная</a><a href="install.html">Установка</a><a href="syntax.html">Синтаксис</a><a href="types.html">Типы</a><a href="compile.html">Компиляция</a><a href="targets.html">Цели</a><a href="dom.html" class="active">DOM</a><a href="externs.html">Externs</a><a href="haxelib.html">Haxelib</a><a href="macros.html">Макросы</a><a href="faq.html">FAQ</a>
@@ -20,7 +20,9 @@
 <h3>Получить элемент</h3>
 <pre><code>import js.Browser;
 
-var el = Browser.document.getElementById("app");</code></pre>
+var el = Browser.document.getElementById("app");
+var byClass = Browser.document.querySelector(".card");
+var all = Browser.document.querySelectorAll("div");</code></pre>
 
 <h3>Создать элемент</h3>
 <pre><code>import js.Browser;
@@ -29,15 +31,27 @@ var div = Browser.document.createElement("div");
 div.textContent = "Привет!";
 Browser.document.body.appendChild(div);</code></pre>
 
+<h3>Вставить HTML</h3>
+<pre><code>el.innerHTML = "&lt;b&gt;жирный&lt;/b&gt;";
+el.textContent = "просто текст";</code></pre>
+<p><code>innerHTML</code> вставляет HTML, <code>textContent</code> — только текст (безопаснее).</p>
+
 <h3>Изменить стиль</h3>
 <pre><code>var el = Browser.document.getElementById("app");
 el.style.color = "orange";
-el.style.fontSize = "18px";</code></pre>
+el.style.fontSize = "18px";
+el.style.display = "none";</code></pre>
 
 <h3>Добавить класс</h3>
 <pre><code>el.classList.add("active");
 el.classList.remove("active");
-el.classList.toggle("active");</code></pre>
+el.classList.toggle("active");
+el.classList.contains("active");</code></pre>
+
+<h3>Атрибуты</h3>
+<pre><code>el.setAttribute("data-id", "5");
+var id = el.getAttribute("data-id");
+el.removeAttribute("data-id");</code></pre>
 
 <h3>Обработчик события</h3>
 <pre><code>import js.Browser;
@@ -47,11 +61,33 @@ btn.addEventListener("click", function(e) {
   trace("клик!");
 });</code></pre>
 
+<h3>Удалить обработчик</h3>
+<pre><code>function onClick(e) { trace("клик"); }
+btn.addEventListener("click", onClick);
+btn.removeEventListener("click", onClick);</code></pre>
+
+<h3>События клавиатуры</h3>
+<pre><code>import js.html.KeyboardEvent;
+
+Browser.document.addEventListener("keydown", function(e:KeyboardEvent) {
+  if (e.key == "Escape") trace("Esc нажат");
+});</code></pre>
+
 <h3>Ввод из поля</h3>
 <pre><code>import js.html.InputElement;
 
 var input = cast Browser.document.getElementById("name");
-var value = input.value;</code></pre>
+var value = input.value;
+input.value = "новое значение";</code></pre>
+
+<h3>Формы</h3>
+<pre><code>import js.html.FormElement;
+
+var form:FormElement = cast Browser.document.getElementById("myForm");
+form.addEventListener("submit", function(e) {
+  e.preventDefault();
+  trace("отправка");
+});</code></pre>
 
 <h3>Таймеры</h3>
 <pre><code>import js.Browser;
@@ -70,22 +106,77 @@ Browser.window.clearInterval(id);</code></pre>
 
 Browser.window.localStorage.setItem("key", "value");
 var v = Browser.window.localStorage.getItem("key");
-Browser.window.localStorage.removeItem("key");</code></pre>
+Browser.window.localStorage.removeItem("key");
+Browser.window.localStorage.clear();</code></pre>
+
+<h3>sessionStorage</h3>
+<pre><code>Browser.window.sessionStorage.setItem("key", "value");</code></pre>
+
+<h3>Fetch (HTTP-запросы)</h3>
+<pre><code>import js.Browser;
+import js.html.Response;
+
+Browser.window.fetch("https://api.example.com/data")
+  .then(function(res:Response) return res.json())
+  .then(function(data) trace(data))
+  .catchError(function(err) trace("ошибка: " + err));</code></pre>
+
+<h3>XMLHttpRequest</h3>
+<pre><code>import js.html.XMLHttpRequest;
+
+var xhr = new XMLHttpRequest();
+xhr.open("GET", "/api/data");
+xhr.onload = function() {
+  trace(xhr.responseText);
+};
+xhr.send();</code></pre>
 
 <h3>Типизированные элементы</h3>
 <p>Для типизации используйте <code>js.html.*</code>:</p>
 <pre><code>import js.html.DivElement;
 import js.html.InputElement;
+import js.html.ButtonElement;
 
 var div:DivElement = Browser.document.createElement("div");
-var input:InputElement = cast Browser.document.getElementById("name");</code></pre>
+var input:InputElement = cast Browser.document.getElementById("name");
+var btn:ButtonElement = cast Browser.document.getElementById("btn");</code></pre>
 
-<h3>Важно</h3>
+<h3>Работа с URL</h3>
+<pre><code>import js.html.Location;
+
+var loc = Browser.window.location;
+trace(loc.href);
+trace(loc.pathname);
+trace(loc.search);
+loc.href = "https://example.com";</code></pre>
+
+<h3>История браузера</h3>
+<pre><code>Browser.window.history.pushState({ page: 1 }, "", "/page1");
+Browser.window.history.back();</code></pre>
+
+<h3>Canvas</h3>
+<pre><code>import js.html.CanvasElement;
+import js.html.CanvasRenderingContext2D;
+
+var canvas:CanvasElement = cast Browser.document.getElementById("canvas");
+var ctx:CanvasRenderingContext2D = canvas.getContext2d();
+ctx.fillStyle = "orange";
+ctx.fillRect(0, 0, 100, 100);</code></pre>
+
+<h3>Важно: только для JS</h3>
 <p>Весь код с <code>js.Browser</code> работает только при компиляции в JavaScript. При сборке в C++ или Java этот код не скомпилируется — используйте условную компиляцию:</p>
 <pre><code>#if js
   import js.Browser;
   Browser.document.title = "Haxe";
 #end</code></pre>
+
+<h3>Альтернативы</h3>
+<ul>
+<li><strong>hxdom</strong> — типизированный DOM-билдер</li>
+<li><strong>tink_domspec</strong> — типы для DOM</li>
+<li><strong>jQueryExtern</strong> — обёртка над jQuery</li>
+<li><strong>coconut.ui</strong> — UI-фреймворк</li>
+</ul>
 </main>
 </div>
 <footer>© 2026 Консультация по Haxe</footer>

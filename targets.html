@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header><h1>Цели компиляции</h1><p>Куда Haxe умеет собирать код.</p></header>
+<header><h1>Цели компиляции</h1><p>Куда Haxe умеет собирать код: возможности, ограничения, примеры.</p></header>
 <div class="layout">
 <nav class="tabs">
 <a href="index.html">Главная</a><a href="install.html">Установка</a><a href="syntax.html">Синтаксис</a><a href="types.html">Типы</a><a href="compile.html">Компиляция</a><a href="targets.html" class="active">Цели</a><a href="dom.html">DOM</a><a href="externs.html">Externs</a><a href="haxelib.html">Haxelib</a><a href="macros.html">Макросы</a><a href="faq.html">FAQ</a>
@@ -21,16 +21,33 @@
 <p><strong>Флаг:</strong> <code>-js файл.js</code></p>
 <p>Браузер, десктоп (Electron), мобильные (Cordova/Capacitor), сервер (Node.js). Самая популярная цель.</p>
 <pre><code>haxe -main Main -js bin/main.js</code></pre>
+<ul>
+<li>Работает везде, где есть JS</li>
+<li>Полный доступ к DOM через <code>js.Browser</code></li>
+<li>Source maps при <code>-debug</code></li>
+<li>Можно использовать <code>hxnodejs</code> для Node.js API</li>
+</ul>
 
 <h3>C++</h3>
 <p><strong>Флаг:</strong> <code>-cpp папка</code></p>
 <p>Нативная сборка для Windows, macOS, Linux, Android, iOS, консолей. Требует установленный C++-компилятор (MSVC, GCC, Clang).</p>
 <pre><code>haxe -main Main -cpp bin/cpp</code></pre>
+<ul>
+<li>Высокая производительность</li>
+<li>Доступ к нативным API</li>
+<li>Используется в играх (OpenFL, HaxeFlixel, Heaps.io)</li>
+<li>Дольше компиляция из-за нативной сборки</li>
+</ul>
 
 <h3>Java / JVM</h3>
 <p><strong>Флаг:</strong> <code>-java папка</code></p>
 <p>Десктоп, Android, сервер (JVM). Требует <code>haxelib install hxjava</code>.</p>
 <pre><code>haxe -main Main -java bin/java</code></pre>
+<ul>
+<li>Интеграция с Java-библиотеками</li>
+<li>Android-разработка</li>
+<li>JVM-сервер</li>
+</ul>
 
 <h3>C#</h3>
 <p><strong>Флаг:</strong> <code>-cs папка</code></p>
@@ -41,6 +58,10 @@
 <p><strong>Флаг:</strong> <code>-python файл.py</code></p>
 <p>Серверные скрипты, автоматизация, десктоп.</p>
 <pre><code>haxe -main Main -python bin/main.py</code></pre>
+<ul>
+<li>Простая интеграция с Python-библиотеками</li>
+<li>Нет строгой типизации в рантайме (типы проверяются компилятором Haxe)</li>
+</ul>
 
 <h3>PHP</h3>
 <p><strong>Флаг:</strong> <code>-php папка</code></p>
@@ -55,12 +76,20 @@
 <h3>Neko</h3>
 <p><strong>Флаг:</strong> <code>-neko файл.n</code></p>
 <p>Собственная VM Haxe. Быстрый запуск, небольшой размер, серверные скрипты.</p>
-<pre><code>haxe -main Main -neko bin/main.n</code></pre>
+<pre><code>haxe -main Main -neko bin/main.n
+neko bin/main.n</code></pre>
 
 <h3>HashLink</h3>
 <p><strong>Флаг:</strong> <code>-hl файл.hl</code></p>
 <p>Современная VM Haxe. Используется в играх (Heaps.io, HaxeFlixel) и на сервере. Быстрее Neko.</p>
-<pre><code>haxe -main Main -hl bin/main.hl</code></pre>
+<pre><code>haxe -main Main -hl bin/main.hl
+hl bin/main.hl</code></pre>
+<ul>
+<li>JIT-компиляция</li>
+<li>Быстрее Neko</li>
+<li>Поддержка C-библиотек через native</li>
+<li>Активно развивается</li>
+</ul>
 
 <h3>Сводная таблица</h3>
 <ul>
@@ -72,6 +101,33 @@
 <li><strong>PHP</strong> — веб-бэкенд</li>
 <li><strong>Lua</strong> — Love2D, Defold</li>
 <li><strong>Neko / HashLink</strong> — собственные VM Haxe</li>
+</ul>
+
+<h3>Как выбрать цель</h3>
+<ul>
+<li><strong>Веб-приложение</strong> — JavaScript</li>
+<li><strong>Игра под десктоп/мобильные</strong> — C++ или HashLink</li>
+<li><strong>Android-приложение</strong> — Java или C++</li>
+<li><strong>Серверный API</strong> — Node.js (JS), JVM, Python, PHP</li>
+<li><strong>Быстрый прототип</strong> — JS или <code>--interp</code></li>
+<li><strong>Максимальная производительность</strong> — C++</li>
+</ul>
+
+<h3>Кроссплатформенные ограничения</h3>
+<p>Не весь код компилируется во все цели. Например, <code>js.Browser</code> доступен только в JS. Используйте условную компиляцию:</p>
+<pre><code>#if js
+  import js.Browser;
+  Browser.document.title = "Haxe";
+#end</code></pre>
+<p>Стандартная библиотека Haxe абстрагирует большинство различий, но нативные API требуют отдельных externs.</p>
+
+<h3>Цели и экосистема</h3>
+<ul>
+<li><strong>JS</strong> — самая большая экосистема библиотек (hxnodejs, jQueryExtern, three.js)</li>
+<li><strong>C++</strong> — OpenFL, HaxeFlixel, Heaps.io, Armory3D</li>
+<li><strong>HashLink</strong> — Heaps.io, серверные фреймворки</li>
+<li><strong>Java</strong> — hxjava, Android-библиотеки</li>
+<li><strong>Python</strong> — интеграция с pip-пакетами</li>
 </ul>
 </main>
 </div>

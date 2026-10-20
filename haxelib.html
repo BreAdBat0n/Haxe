@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header><h1>Haxelib</h1><p>Менеджер библиотек: установка, список, удаление.</p></header>
+<header><h1>Haxelib</h1><p>Менеджер библиотек: установка, версии, публикация, популярные пакеты.</p></header>
 <div class="layout">
 <nav class="tabs">
 <a href="index.html">Главная</a><a href="install.html">Установка</a><a href="syntax.html">Синтаксис</a><a href="types.html">Типы</a><a href="compile.html">Компиляция</a><a href="targets.html">Цели</a><a href="dom.html">DOM</a><a href="externs.html">Externs</a><a href="haxelib.html" class="active">Haxelib</a><a href="macros.html">Макросы</a><a href="faq.html">FAQ</a>
@@ -44,24 +44,83 @@ haxelib install jQueryExtern</code></pre>
 
 <h3>Установить конкретную версию</h3>
 <pre><code>haxelib install heaps 1.9.0</code></pre>
+<p>Посмотреть доступные версии:</p>
+<pre><code>haxelib info heaps</code></pre>
 
 <h3>Локальная разработка библиотеки</h3>
 <p>Если вы пишете свою библиотеку, её можно подключить из локальной папки:</p>
 <pre><code>haxelib dev имя_библиотеки путь/к/папке</code></pre>
+<p>Отключить:</p>
+<pre><code>haxelib dev имя_библиотеки</code></pre>
+
+<h3>Публикация библиотеки</h3>
+<ol>
+<li>Создайте <code>haxelib.json</code> с описанием (имя, версия, автор, зависимости).</li>
+<li>Соберите архив <code>haxelib submit</code>.</li>
+<li>Отправьте на <strong>lib.haxe.org</strong> через веб-форму.</li>
+</ol>
+<p>Пример <code>haxelib.json</code>:</p>
+<pre><code>{
+  "name": "mylib",
+  "url": "https://github.com/user/mylib",
+  "license": "MIT",
+  "tags": ["utility", "web"],
+  "description": "Моя библиотека",
+  "version": "1.0.0",
+  "classPath": "src",
+  "releasenote": "первый релиз",
+  "contributors": ["user"],
+  "dependencies": {}
+}</code></pre>
+
+<h3>Зависимости</h3>
+<p>В <code>haxelib.json</code> можно указать зависимости — haxelib установит их автоматически:</p>
+<pre><code>"dependencies": {
+  "tink_core": "1.0.0",
+  "hxnodejs": "12.0.0"
+}</code></pre>
 
 <h3>Популярные библиотеки</h3>
 <ul>
 <li><strong>heaps</strong> — игровой движок / 2D-3D рендеринг</li>
 <li><strong>hxnodejs</strong> — API Node.js для Haxe</li>
+<li><strong>hxelectron</strong> — Electron для десктопных приложений</li>
 <li><strong>jQueryExtern</strong> — externs для jQuery</li>
 <li><strong>three.js</strong> — externs для Three.js</li>
 <li><strong>tink_http</strong> — HTTP-клиент</li>
 <li><strong>tink_json</strong> — работа с JSON</li>
+<li><strong>tink_core</strong> — базовая библиотека tink</li>
 <li><strong>haxe-ws</strong> — WebSocket</li>
+<li><strong>openfl</strong> — кроссплатформенный фреймворк (Flash-подобный API)</li>
+<li><strong>haxeFlixel</strong> — 2D-игровой движок</li>
+<li><strong>haxeui</strong> — кроссплатформенный UI</li>
+<li><strong>haxe-strings</strong> — утилиты для строк</li>
 </ul>
 
 <h3>Где искать</h3>
 <p>Каталог: <strong>lib.haxe.org</strong>. Также многие библиотеки есть на GitHub с тегом <code>haxelib</code>.</p>
+
+<h3>Кэш библиотек</h3>
+<p>Библиотеки хранятся в глобальной папке (обычно <code>~/.haxelib</code> или <code>%HOMEPATH%/.haxelib</code>). Можно указать другую папку через <code>haxelib setup</code>.</p>
+
+<h3>Офлайн-установка</h3>
+<p>Если нет интернета, можно установить библиотеку из zip-архива:</p>
+<pre><code>haxelib install mylib.zip</code></pre>
+
+<h3>Проверка целостности</h3>
+<pre><code>haxelib path имя</code></pre>
+<p>Покажет путь к установленной библиотеке.</p>
+
+<h3>Полезные команды</h3>
+<pre><code>haxelib install имя      # установить
+haxelib list             # список
+haxelib update           # обновить все
+haxelib remove имя       # удалить
+haxelib info имя         # информация
+haxelib path имя         # путь
+haxelib dev имя путь     # локальная разработка
+haxelib submit           # собрать архив для публикации
+haxelib setup            # сменить папку библиотек</code></pre>
 </main>
 </div>
 <footer>© 2026 Консультация по Haxe</footer>

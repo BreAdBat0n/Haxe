@@ -1,30 +1,48 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Установка — Haxe</title><link rel="stylesheet" href="style.css"></head>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Установка — Haxe</title>
 <link rel="stylesheet" href="font.css">
+<link rel="stylesheet" href="style.css">
+</head>
 <body>
-<header><h1>Установка</h1><p>Компилятор, haxelib, IDE и проверка.</p></header>
+<header><h1>Установка</h1><p>Компилятор, haxelib, IDE, первый проект, решение проблем.</p></header>
 <div class="layout">
 <nav class="tabs">
 <a href="index.html">Главная</a><a href="install.html" class="active">Установка</a><a href="syntax.html">Синтаксис</a><a href="types.html">Типы</a><a href="compile.html">Компиляция</a><a href="targets.html">Цели</a><a href="dom.html">DOM</a><a href="externs.html">Externs</a><a href="haxelib.html">Haxelib</a><a href="macros.html">Макросы</a><a href="faq.html">FAQ</a>
 </nav>
 <main>
 <h2>Установка Haxe</h2>
+<p>Установка состоит из трёх частей: компилятор, менеджер библиотек <code>haxelib</code> и редактор кода. Компилятор и haxelib ставятся вместе.</p>
+
 <h3>1. Компилятор</h3>
 <p>Скачайте установщик с официального сайта <strong>haxe.org</strong> и установите. После установки проверьте версию:</p>
 <pre><code>haxe --version</code></pre>
+<p>Вывод должен быть вроде <code>4.3.4</code>. Если команда не найдена — проверьте, что путь к Haxe добавлен в <code>PATH</code>.</p>
+
 <h3>2. Менеджер библиотек haxelib</h3>
 <p>Устанавливается вместе с компилятором. Проверка:</p>
 <pre><code>haxelib version</code></pre>
-<p>Основные команды: <code>haxelib install имя</code> (установить), <code>haxelib list</code> (список), <code>haxelib upgrade</code> (обновить), <code>haxelib remove имя</code> (удалить) [citation:8].</p>
+<p>Основные команды:</p>
+<pre><code>haxelib install имя   # установить
+haxelib list          # список установленных
+haxelib update        # обновить все
+haxelib remove имя    # удалить
+haxelib dev имя путь  # подключить локальную папку</code></pre>
+
 <h3>3. IDE и редакторы</h3>
 <ul>
-<li><strong>VS Code</strong> — расширение «Haxe» (подсветка, автодополнение, переход к определению).</li>
-<li><strong>IntelliJ IDEA</strong> — плагин Haxe.</li>
+<li><strong>VS Code</strong> — расширение «Haxe» (подсветка, автодополнение, переход к определению, диагностика).</li>
+<li><strong>IntelliJ IDEA</strong> — плагин Haxe (поддержка проектов, отладка).</li>
+<li><strong>Vim / Neovim</strong> — плагины для подсветки и LSP.</li>
+<li><strong>Sublime Text</strong> — пакет Haxe.</li>
 <li>Любой редактор с подсветкой синтаксиса — минимально достаточно.</li>
 </ul>
-<h3>4. Проверка: первый проект</h3>
-<p>Создайте папку проекта:</p>
+<p>Для полноценной работы с автодополнением нужен language server. В VS Code он ставится вместе с расширением.</p>
+
+<h3>4. Структура проекта</h3>
 <pre><code>project/
 ├── src/
 │   └── Main.hx
@@ -32,17 +50,22 @@
 │   └── js/
 │       └── index.html
 └── build.hxml</code></pre>
-<p>Содержимое <code>src/Main.hx</code>:</p>
+<p><code>src/</code> — исходники, <code>bin/</code> — результат компиляции, <code>build.hxml</code> — конфигурация сборки.</p>
+
+<h3>5. Первый проект: Main.hx</h3>
 <pre><code>class Main {
   static function main() {
     trace("Haxe is great!");
   }
 }</code></pre>
-<p>Содержимое <code>build.hxml</code> (компиляция в JavaScript):</p>
+
+<h3>6. build.hxml</h3>
 <pre><code>-cp src
 -main Main
 -js bin/js/main.js</code></pre>
-<p>Содержимое <code>bin/js/index.html</code>:</p>
+<p>Строки означают: добавить <code>src</code> в пути поиска, главный класс <code>Main</code>, скомпилировать в <code>bin/js/main.js</code>.</p>
+
+<h3>7. index.html</h3>
 <pre><code>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;&lt;meta charset="utf-8"&gt;&lt;/head&gt;
@@ -50,12 +73,43 @@
   &lt;script src="main.js"&gt;&lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
-<h3>5. Компиляция и запуск</h3>
+
+<h3>8. Компиляция и запуск</h3>
 <pre><code>haxe build.hxml</code></pre>
-<p>Откройте <code>bin/js/index.html</code> в браузере. В консоли разработчика (F12) должно появиться <code>Haxe is great!</code> [citation:11].</p>
-<h3>6. Установка поддержки Java (опционально)</h3>
+<p>Откройте <code>bin/js/index.html</code> в браузере. В консоли (F12) появится <code>Haxe is great!</code>.</p>
+
+<h3>9. Установка поддержки Java (опционально)</h3>
 <pre><code>haxelib install hxjava</code></pre>
-<p>Для сборки под Java используется флаг <code>-java</code> в build.hxml [citation:3].</p>
+<p>Для сборки под Java используется флаг <code>-java</code> в build.hxml.</p>
+
+<h3>10. Установка C++ (опционально)</h3>
+<p>Нужен C++-компилятор: MSVC (Windows), GCC/Clang (Linux/macOS). Затем:</p>
+<pre><code>haxe -main Main -cpp bin/cpp</code></pre>
+<p>Компилятор Haxe сгенерирует C++-код, который затем собирается нативным компилятором.</p>
+
+<h3>11. Установка HashLink (опционально)</h3>
+<p>HashLink — VM Haxe. Скачайте с <strong>hashlink.haxe.org</strong>, установите, затем:</p>
+<pre><code>haxe -main Main -hl bin/main.hl
+hl bin/main.hl</code></pre>
+
+<h3>12. Решение проблем</h3>
+<ul>
+<li><strong>haxe: command not found</strong> — путь к Haxe не в PATH. Добавьте вручную или переустановите.</li>
+<li><strong>haxelib не видит библиотеку</strong> — проверьте <code>haxelib list</code>, возможно, нужно <code>-lib имя</code> в build.hxml.</li>
+<li><strong>Ошибка «Class not found»</strong> — проверьте <code>-cp</code> и имя главного класса (<code>-main</code>).</li>
+<li><strong>Кириллица в консоли</strong> — используйте UTF-8 в терминале.</li>
+<li><strong>Старая версия Haxe</strong> — обновите с сайта или через пакетный менеджер.</li>
+</ul>
+
+<h3>13. Обновление Haxe</h3>
+<p>Скачайте новую версию с сайта и установите поверх. <code>haxelib</code> сохраняет библиотеки между версиями. Проверьте:</p>
+<pre><code>haxe --version</code></pre>
+
+<h3>14. Полезные команды</h3>
+<pre><code>haxe --help          # справка
+haxe --version       # версия
+haxe build.hxml      # сборка по конфигу
+haxe -main Main --interp  # быстрый запуск без файла</code></pre>
 </main>
 </div>
 <footer>© 2026 Консультация по Haxe</footer>

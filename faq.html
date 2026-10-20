@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header><h1>FAQ</h1><p>Частые вопросы по Haxe.</p></header>
+<header><h1>FAQ</h1><p>Частые вопросы по Haxe — язык, установка, сборка, экосистема.</p></header>
 <div class="layout">
 <nav class="tabs">
 <a href="index.html">Главная</a><a href="install.html">Установка</a><a href="syntax.html">Синтаксис</a><a href="types.html">Типы</a><a href="compile.html">Компиляция</a><a href="targets.html">Цели</a><a href="dom.html">DOM</a><a href="externs.html">Externs</a><a href="haxelib.html">Haxelib</a><a href="macros.html">Макросы</a><a href="faq.html" class="active">FAQ</a>
@@ -74,6 +74,111 @@
 <details>
 <summary>Haxe мёртв?</summary>
 <p>Нет. Язык активно развивается, выходят новые версии компилятора, есть крупные проекты (Heaps.io, HaxeFlixel, Armory3D). Сообщество небольшое, но живое.</p>
+</details>
+
+<details>
+<summary>Сложно ли выучить Haxe?</summary>
+<p>Если вы знаете Java, C#, ActionScript или TypeScript — синтаксис покажется знакомым. Основная сложность — освоить кроссплатформенность, макросы и build.hxml.</p>
+</details>
+
+<details>
+<summary>Чем Haxe лучше JavaScript?</summary>
+<p>Строгая типизация, компиляция во много целей, макросы, единая стандартная библиотека. Но у JS больше экосистема и готовых библиотек.</p>
+</details>
+
+<details>
+<summary>Какие IDE поддерживают Haxe?</summary>
+<p>VS Code (расширение Haxe), IntelliJ IDEA (плагин Haxe), Vim/Neovim, Sublime Text. Для автодополнения нужен language server.</p>
+</details>
+
+<details>
+<summary>Как опубликовать библиотеку?</summary>
+<p>Создайте <code>haxelib.json</code>, соберите архив через <code>haxelib submit</code>, отправьте на <strong>lib.haxe.org</strong>. Подробнее — на вкладке «Haxelib».</p>
+</details>
+
+<details>
+<summary>Что такое externs?</summary>
+<p>Типизированное описание внешнего API (JS-библиотеки). Не компилируется в код, только проверяет типы. Подробнее — на вкладке «Externs».</p>
+</details>
+
+<details>
+<summary>Можно ли использовать Haxe с React?</summary>
+<p>Да, через <code>haxe-react</code> или <code>react</code> externs. Также есть <code>coconut.ui</code> — собственный UI-фреймворк.</p>
+</details>
+
+<details>
+<summary>Что такое DCE?</summary>
+<p>Dead Code Elimination — удаление неиспользуемого кода при компиляции. Уровни: <code>no</code>, <code>std</code>, <code>full</code>. Флаг: <code>-dce full</code>.</p>
+</details>
+
+<details>
+<summary>Как работает кроссплатформенность?</summary>
+<p>Один код компилируется в разные цели. Стандартная библиотека абстрагирует различия, но нативные API требуют условной компиляции (<code>#if js</code>, <code>#if cpp</code>).</p>
+</details>
+
+<details>
+<summary>Есть ли Haxe для мобильных игр?</summary>
+<p>Да — HaxeFlixel, OpenFL, Heaps.io, Armory3D. Компилируются в C++ (iOS/Android) или JS (веб).</p>
+</details>
+
+<details>
+<summary>Что такое Neko?</summary>
+<p>Виртуальная машина Haxe. Быстрый запуск, небольшой размер, серверные скрипты. Флаг: <code>-neko</code>.</p>
+</details>
+
+<details>
+<summary>Как подключить C-библиотеку?</summary>
+<p>Через <code>@:native</code> и externs, либо через HashLink native. В C++-цели можно использовать <code>@:headerCode</code> и <code>@:cppFileCode</code> для вставки C++-кода.</p>
+</details>
+
+<details>
+<summary>Есть ли async/await в Haxe?</summary>
+<p>В Haxe нет встроенного async/await, но есть <code>tink_core</code> (Future/Promise), <code>haxe-coroutines</code>, <code>tink_await</code>. В JS-цели можно использовать промисы через externs.</p>
+</details>
+
+<details>
+<summary>Как использовать Haxe с WebAssembly?</summary>
+<p>Через C++-цель с компиляцией в WASM (Emscripten). Готовых «из коробки» решений мало, но сообщество экспериментирует.</p>
+</details>
+
+<details>
+<summary>Что такое inline?</summary>
+<p>Модификатор, который подставляет тело функции в место вызова. Убирает накладные расходы на вызов, но увеличивает размер кода.</p>
+</details>
+
+<details>
+<summary>Что такое abstract type?</summary>
+<p>Обёртка над существующим типом с возможностью перегрузки операторов. Не создаёт новый тип в рантайме (нулевые накладные расходы). Подробнее — на вкладке «Типы».</p>
+</details>
+
+<details>
+<summary>Как сделать кроссплатформенный HTTP-запрос?</summary>
+<p>Через <code>haxe.Http</code> (стандартная библиотека) — работает на большинстве целей. Для JS-специфики — <code>js.Browser.window.fetch</code>.</p>
+</details>
+
+<details>
+<summary>Что такое @:native?</summary>
+<p>Метаданные, указывающие имя класса/метода в целевой платформе. Используется в externs, когда имя в JS отличается от имени в Haxe.</p>
+</details>
+
+<details>
+<summary>Как использовать Haxe с Electron?</summary>
+<p>Через <code>hxelectron</code> — externs для Electron API. Компиляция в JS, упаковка в десктопное приложение.</p>
+</details>
+
+<details>
+<summary>Есть ли Haxe для Data Science?</summary>
+<p>Слабо развито. Можно компилировать в Python и использовать pip-библиотеки, но экосистема Haxe в этой области небольшая.</p>
+</details>
+
+<details>
+<summary>Как обновить Haxe?</summary>
+<p>Скачайте новую версию с сайта и установите поверх. <code>haxelib</code> сохраняет библиотеки между версиями. Проверьте <code>haxe --version</code>.</p>
+</details>
+
+<details>
+<summary>Что читать дальше?</summary>
+<p>Официальное руководство <strong>haxe.org/manual</strong>, Haxe Code Cookbook, исходники компилятора на GitHub, форум <strong>community.haxe.org</strong>.</p>
 </details>
 </main>
 </div>

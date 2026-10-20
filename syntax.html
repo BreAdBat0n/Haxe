@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Синтаксис — Haxe</title><link rel="stylesheet" href="style.css"></head>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Синтаксис — Haxe</title>
 <link rel="stylesheet" href="font.css">
+<link rel="stylesheet" href="style.css">
+</head>
 <body>
-<header><h1>Синтаксис</h1><p>Точка входа, переменные, операции, условия, циклы, функции.</p></header>
+<header><h1>Синтаксис</h1><p>Точка входа, переменные, операции, условия, циклы, функции, блоки, комментарии.</p></header>
 <div class="layout">
 <nav class="tabs">
 <a href="index.html">Главная</a><a href="install.html">Установка</a><a href="syntax.html" class="active">Синтаксис</a><a href="types.html">Типы</a><a href="compile.html">Компиляция</a><a href="targets.html">Цели</a><a href="dom.html">DOM</a><a href="externs.html">Externs</a><a href="haxelib.html">Haxelib</a><a href="macros.html">Макросы</a><a href="faq.html">FAQ</a>
 </nav>
 <main>
 <h2>Синтаксис Haxe</h2>
+<p>Синтаксис Haxe похож на C-подобные языки (Java, C#, ActionScript): фигурные скобки, точки с запятой, классы и функции. Но есть и свои особенности — например, выражения как значения и мощный вывод типов.</p>
+
 <h3>Точка входа</h3>
 <p>Любая программа начинается с класса, содержащего статический метод <code>main</code>:</p>
 <pre><code>class Main {
@@ -17,32 +24,49 @@
     trace("Hello, Haxe!");
   }
 }</code></pre>
+
 <h3>Комментарии</h3>
 <pre><code>// однострочный
 /* многострочный
-   комментарий */</code></pre>
+   комментарий */
+/**
+ * Документационный комментарий (doc)
+ */</code></pre>
+
 <h3>Переменные</h3>
 <p>Объявление через <code>var</code>, тип опционален (выводится компилятором):</p>
 <pre><code>var name:String = "Haxe";
 var age:Int = 10;
 var ratio:Float = 0.5;
-var flag:Bool = true;</code></pre>
+var flag:Bool = true;
+var nothing = null; // Dynamic/Null</code></pre>
+<p>Переменные можно объявлять без инициализации, но использовать до присваивания нельзя:</p>
+<pre><code>var x:Int;
+x = 5; // ok
+trace(x);</code></pre>
+
 <h3>Константы и литералы</h3>
 <ul>
-<li>Целые: <code>0</code>, <code>-134</code>, <code>0xFF00</code></li>
+<li>Целые: <code>0</code>, <code>-134</code>, <code>0xFF00</code>, <code>0b1010</code></li>
 <li>Дробные: <code>123.0</code>, <code>.14179</code>, <code>13e50</code></li>
 <li>Строки: <code>"hello"</code>, <code>'hello "world"'</code></li>
 <li>Логические: <code>true</code>, <code>false</code></li>
-<li><code>null</code> — специальное значение для любого типа [citation:2]</li>
+<li><code>null</code> — специальное значение для любого типа</li>
 </ul>
+
 <h3>Операции (по приоритету)</h3>
 <ul>
-<li>Присваивание: <code>=</code>, <code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code></li>
-<li>Логические: <code>||</code>, <code>&&</code></li>
+<li>Присваивание: <code>=</code>, <code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code>, <code>%=</code>, <code>&amp;=</code>, <code>|=</code>, <code>^=</code>, <code>&lt;&lt;=</code>, <code>&gt;&gt;=</code>, <code>&gt;&gt;&gt;=</code></li>
+<li>Логические: <code>||</code>, <code>&amp;&amp;</code></li>
 <li>Сравнения: <code>==</code>, <code>!=</code>, <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code></li>
-<li>Битовые: <code>|</code>, <code>&amp;</code>, <code>^</code>, сдвиги <code>&lt;&lt;</code>, <code>&gt;&gt;</code></li>
-<li>Арифметические: <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code> [citation:2]</li>
+<li>Битовые: <code>|</code>, <code>&amp;</code>, <code>^</code>, сдвиги <code>&lt;&lt;</code>, <code>&gt;&gt;</code>, <code>&gt;&gt;&gt;</code></li>
+<li>Арифметические: <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code></li>
+<li>Унарные: <code>!</code>, <code>~</code>, <code>++</code>, <code>--</code>, <code>+</code>, <code>-</code></li>
 </ul>
+<p>Строки конкатенируются через <code>+</code>. Для интерполяции используйте <code>'строка ${переменная}'</code>:</p>
+<pre><code>var n = 5;
+trace('значение: ${n}'); // значение: 5</code></pre>
+
 <h3>Условия</h3>
 <pre><code>if (age &gt; 18) {
   trace("взрослый");
@@ -51,6 +75,9 @@ var flag:Bool = true;</code></pre>
 } else {
   trace("ребёнок");
 }</code></pre>
+<p>Тернарный оператор:</p>
+<pre><code>var status = age &gt;= 18 ? "adult" : "minor";</code></pre>
+
 <h3>Циклы</h3>
 <pre><code>for (i in 0...5) {
   trace(i); // 0,1,2,3,4
@@ -63,18 +90,119 @@ for (item in arr) {
 
 while (condition) {
   // ...
+}
+
+do {
+  // ...
+} while (condition);</code></pre>
+<p>Цикл по ключам и значениям (для Map):</p>
+<pre><code>var map = ["a" =&gt; 1, "b" =&gt; 2];
+for (k in map.keys()) {
+  trace(k + " = " + map[k]);
 }</code></pre>
+
 <h3>Функции</h3>
 <pre><code>function sum(a:Int, b:Int):Int {
   return a + b;
 }
 
-// значение по умолчанию
 function greet(name:String = "мир"):String {
   return "Привет, " + name;
+}
+
+var fn = function(x:Int) return x * 2;</code></pre>
+
+<h3>Блоки как выражения</h3>
+<p>Блок <code>{ ... }</code> содержит несколько выражений. Значение блока — значение последнего выражения. Пустой блок имеет тип <code>Void</code>.</p>
+<pre><code>var x = {
+  var a = 10;
+  var b = 20;
+  a + b; // значение блока = 30
+};
+trace(x); // 30</code></pre>
+
+<h3>Switch</h3>
+<pre><code>var value = 2;
+switch (value) {
+  case 1: trace("один");
+  case 2, 3: trace("два или три");
+  default: trace("другое");
 }</code></pre>
-<h3>Блоки</h3>
-<p>Блок <code>{ ... }</code> содержит несколько выражений. Значение блока — значение последнего выражения. Пустой блок имеет тип <code>Void</code> [citation:2].</p>
+<p>Switch в Haxe — выражение, поэтому его можно присваивать:</p>
+<pre><code>var text = switch (value) {
+  case 1: "один";
+  case 2: "два";
+  default: "другое";
+};</code></pre>
+
+<h3>Try / Catch</h3>
+<pre><code>try {
+  throw "ошибка";
+} catch (e:String) {
+  trace("поймано: " + e);
+}</code></pre>
+
+<h3>Модули и импорт</h3>
+<pre><code>import haxe.ds.StringMap;
+import js.Browser;
+
+class Main { ... }</code></pre>
+<p>Импорт пакета: <code>import mypackage.*;</code></p>
+
+<h3>Пакеты</h3>
+<p>Пакет задаётся через <code>package</code> в начале файла:</p>
+<pre><code>package utils;
+
+class Helper {
+  public static function add(a:Int, b:Int):Int return a + b;
+}</code></pre>
+<p>Файл должен лежать в <code>utils/Helper.hx</code>.</p>
+
+<h3>Область видимости</h3>
+<ul>
+<li><code>public</code> — доступно отовсюду</li>
+<li><code>private</code> — только внутри класса</li>
+<li><code>static</code> — принадлежит классу, а не экземпляру</li>
+<li><code>inline</code> — подставляется в место вызова</li>
+<li><code>override</code> — переопределение метода родителя</li>
+<li><code>final</code> — запрет переопределения</li>
+</ul>
+
+<h3>Условная компиляция</h3>
+<pre><code>#if js
+  trace("это JavaScript");
+#elseif cpp
+  trace("это C++");
+#else
+  trace("другая цель");
+#end</code></pre>
+
+<h3>Строки и экранирование</h3>
+<pre><code>var s1 = "обычная строка";
+var s2 = 'одинарные кавычки тоже работают';
+var s3 = "перенос\nстроки";
+var s4 = "табуляция\tсимвол";
+var s5 = 'интерполяция: ${name}';</code></pre>
+
+<h3>Массивы</h3>
+<pre><code>var arr = [1, 2, 3];
+arr.push(4);
+trace(arr.length); // 4
+trace(arr[0]);     // 1</code></pre>
+
+<h3>Анонимные объекты</h3>
+<pre><code>var user = { name: "Иван", age: 25 };
+trace(user.name);
+trace(user.age);</code></pre>
+
+<h3>Типы в сигнатурах</h3>
+<pre><code>function process(items:Array&lt;Int&gt;):Map&lt;String, Int&gt; {
+  // ...
+}</code></pre>
+
+<h3>NULL-безопасность</h3>
+<p>По умолчанию <code>null</code> можно присвоить любому типу, но для строгой проверки используйте <code>Null&lt;T&gt;</code> или флаг <code>-D null-safety</code>.</p>
+<pre><code>var maybe:Null&lt;Int&gt; = null;</code></pre>
 </main>
 </div>
 <footer>© 2026 Консультация по Haxe</footer>

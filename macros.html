@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header><h1>Макросы</h1><p>Генерация кода на этапе компиляции.</p></header>
+<header><h1>Макросы</h1><p>Генерация кода на этапе компиляции, DSL, проверки, оптимизации.</p></header>
 <div class="layout">
 <nav class="tabs">
 <a href="index.html">Главная</a><a href="install.html">Установка</a><a href="syntax.html">Синтаксис</a><a href="types.html">Типы</a><a href="compile.html">Компиляция</a><a href="targets.html">Цели</a><a href="dom.html">DOM</a><a href="externs.html">Externs</a><a href="haxelib.html">Haxelib</a><a href="macros.html" class="active">Макросы</a><a href="faq.html">FAQ</a>
@@ -64,12 +64,69 @@ class Build {
   return e;
 }</code></pre>
 
+<h3>Вычисление констант</h3>
+<pre><code>public static macro function constAdd(a:Int, b:Int):Expr {
+  return macro $v{a + b};
+}</code></pre>
+<p><code>$v{...}</code> вставляет значение как литерал.</p>
+
+<h3>Чтение файла на этапе компиляции</h3>
+<pre><code>import sys.io.File;
+import haxe.macro.Context;
+
+public static macro function includeFile(path:String):Expr {
+  var content = File.getContent(path);
+  return macro $v{content};
+}</code></pre>
+
+<h3>Генерация класса</h3>
+<pre><code>import haxe.macro.Context;
+import haxe.macro.Expr;
+
+class Build {
+  public static macro function build():Array&lt;Field&gt; {
+    var fields = [];
+    for (i in 0...5) {
+      fields.push({
+        name: "field" + i,
+        access: [APublic],
+        kind: FVar(macro:Int, macro $v{i}),
+        pos: Context.currentPos()
+      });
+    }
+    return fields;
+  }
+}</code></pre>
+
+<h3>Макрос-билдер</h3>
+<p>Макрос с именем <code>build</code> вызывается автоматически при компиляции класса:</p>
+<pre><code>@:build(MyMacros.build())
+class MyClass {
+  // поля добавятся автоматически
+}</code></pre>
+
+<h3>Макрос-инициализатор</h3>
+<pre><code>@:autoBuild(MyMacros.build())</code></pre>
+<p>Применяется ко всем наследникам класса.</p>
+
 <h3>Условная компиляция (не макросы, но рядом)</h3>
 <pre><code>#if js
   trace("это JavaScript");
 #elseif cpp
   trace("это C++");
 #end</code></pre>
+
+<h3>Context API</h3>
+<ul>
+<li><code>Context.currentPos()</code> — текущая позиция в коде</li>
+<li><code>Context.error(msg, pos)</code> — ошибка компиляции</li>
+<li><code>Context.warning(msg, pos)</code> — предупреждение</li>
+<li><code>Context.eval(expr)</code> — вычислить выражение</li>
+<li><code>Context.getType(name)</code> — получить тип</li>
+<li><code>Context.defined(name)</code> — проверить флаг компиляции</li>
+<li><code>Context.getLocalClass()</code> — текущий класс</li>
+<li><code>Context.getLocalMethod()</code> — текущий метод</li>
+</ul>
 
 <h3>Типичные применения</h3>
 <ul>
@@ -78,10 +135,42 @@ class Build {
 <li>Создание DSL (встроенных языков)</li>
 <li>Оптимизация: вычисление констант заранее</li>
 <li>Подключение внешних ресурсов (файлов, JSON) в код</li>
+<li>Генерация кода из схем (protobuf, JSON Schema)</li>
+<li>Логирование вызовов методов</li>
+<li>Проверка инвариантов</li>
 </ul>
 
 <h3>Важно</h3>
 <p>Макросы выполняются в контексте компилятора — они не попадают в выходной код как обычные функции. Для их использования нужен <code>import haxe.macro.*</code>. Отладка макросов — через <code>Context.warning</code> и <code>Context.error</code>.</p>
+
+<h3>Ограничения</h3>
+<ul>
+<li>Макросы не могут иметь побочных эффектов в рантайме</li>
+<li>Нельзя использовать обычные функции времени выполнения</li>
+<li>Отладка сложнее, чем у обычного кода</li>
+<li>Некоторые API недоступны в макросах (зависят от цели)</li>
+</ul>
+
+<h3>Пример: логирование вызовов</h3>
+<pre><code>public static macro function log(expr:Expr):Expr {
+  return macro {
+    trace("вызов: " + $v{expr.toString()});
+    $expr;
+  };
+}</code></pre>
+
+<h3>Пример: DSL</h3>
+<pre><code>public static macro function html(expr:Expr):Expr {
+  // разбор выражения и генерация DOM-кода
+  return macro trace("сгенерировано");
+}</code></pre>
+
+<h3>Полезные ссылки</h3>
+<ul>
+<li>Документация: <strong>haxe.org/manual/macro</strong></li>
+<li>Примеры: <strong>github.com/HaxeFoundation/haxe/tree/development/tests/misc</strong></li>
+<li>Библиотеки с макросами: tink_core, coconut, hxbit</li>
+</ul>
 </main>
 </div>
 <footer>© 2026 Консультация по Haxe</footer>
